@@ -95,6 +95,12 @@ define(["util", "vbo"],
                                                     "dataType": gl.FLOAT,
                                                     "data": coords 
                                                   } );
+        
+     // create vertex buffer object (VBO) for the coordinates
+        this.indexBuffer = new vbo.indices(gl, { "numComponents": 3,
+                                                    "dataType": gl.FLOAT,
+                                                    "data": coords 
+                                                  } );
 
         
     };
