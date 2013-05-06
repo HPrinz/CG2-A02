@@ -86,6 +86,15 @@ define(["util", "vbo"],
                         0.5, -0.5, -0.5,  // F'': index 22
                         0.5, -0.5,  0.5   // B'': index 23
                      ];
+        
+        var cubeIndices = [
+                                 0,  1,  2,      0,  2,  3,    // front
+                                 4,  5,  6,      4,  6,  7,    // back
+                                 8,  9,  10,     8,  10, 11,   // top
+                                 12, 13, 14,     12, 14, 15,   // bottom
+                                 16, 17, 18,     16, 18, 19,   // right
+                                 20, 21, 22,     20, 22, 23    // left
+                               ]
                                           
         // therer are 3 floats per vertex, so...
         this.numVertices = coords.length / 3;
@@ -96,12 +105,7 @@ define(["util", "vbo"],
                                                     "data": coords 
                                                   } );
         
-     // create vertex buffer object (VBO) for the coordinates
-        this.indexBuffer = new vbo.indices(gl, { "numComponents": 3,
-                                                    "dataType": gl.FLOAT,
-                                                    "data": coords 
-                                                  } );
-
+    
         
     };
 
