@@ -35,11 +35,22 @@ define(["util", "vbo"],
                         0.5, -0.5,  0,  // coordinates of B
                           0,  0.5,  0   // coordinates of C
                      ];
+        
+        var colors = [1.0, 0.0, 0.0,
+                      0.0, 1.0, 0.0,
+                      0.0, 0.0, 1.0
+                     ];
 
         // create vertex buffer object (VBO) for the coordinates
         this.coordsBuffer = new vbo.Attribute(gl, { "numComponents": 3,
                                                     "dataType": gl.FLOAT,
                                                     "data": coords 
+                                                  } );
+                    
+     // create vertex buffer object (VBO) for the colors
+        this.colorBuffer = new vbo.Attribute(gl, { "numComponents": 3,
+            										"dataType": gl.FLOAT,
+            										"data": colors	
                                                   } );
                     
     };
@@ -49,6 +60,7 @@ define(["util", "vbo"],
 
         // bind the attribute buffers
         this.coordsBuffer.bind(gl, program, "vertexPosition");
+        this.colorBuffer.bind(gl, program, "vertexColor");
         
         // connect the vertices with triangles
         gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices()); 

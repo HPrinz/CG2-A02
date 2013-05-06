@@ -79,7 +79,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                 
         // draw the scene objects
         if(this.drawOptions["Show Triangle"]) {    
-           this.triangle.draw(gl, this.programs.red);
+           this.triangle.draw(gl, this.programs.vertexColor);
         }
         if(this.drawOptions["Show Cube"]) {    
             this.cube.draw(gl, this.programs.red);
