@@ -51,8 +51,7 @@ define(["util", "vbo"],
         this.colorBuffer = new vbo.Attribute(gl, { "numComponents": 3,
             										"dataType": gl.FLOAT,
             										"data": colors	
-                                                  } );
-                    
+                                                  } );              
     };
 
     // draw method: activate buffers and issue WebGL draw() method
@@ -64,7 +63,7 @@ define(["util", "vbo"],
         
         // connect the vertices with triangles
         gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices()); 
-         
+        gl.drawArrays(gl.TRIANGLES, 0, this.coordsBuffer.numVertices());
     };
         
     // this module only returns the constructor function    
