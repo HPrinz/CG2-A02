@@ -82,7 +82,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
            this.triangle.draw(gl, this.programs.vertexColor);
         }
         if(this.drawOptions["Show Cube"]) {    
-            this.cube.draw(gl, this.programs.red);
+            this.cube.draw(gl, this.programs.vertexColor);
          }
     };
 
