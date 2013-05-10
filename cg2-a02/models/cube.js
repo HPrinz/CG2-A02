@@ -152,7 +152,6 @@ define([ "util", "vbo" ], (function(Util, vbo) {
 		this.indexBuffer.bind(gl);
 
 		// draw the vertices as points
-		// TODO 24?
 		gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
 
 	};

@@ -39,6 +39,7 @@ define(["util", "vbo"],
     
         // generate vertex coordinates and store in an array
         var coords = [];
+
         for(var i=0; i<=segments; i++) {
         
             // X and Z coordinates are on a circle around the origin
@@ -52,15 +53,38 @@ define(["util", "vbo"],
             // add two points for each position on the circle
             // IMPORTANT: push each float value separately!
             coords.push(x,y0,z);
-            coords.push(x,y1,z);
-            
-        };  
+            coords.push(x,y1,z);    
+        };      
         
         // create vertex buffer object (VBO) for the coordinates
         this.coordsBuffer = new vbo.Attribute(gl, { "numComponents": 3,
                                                     "dataType": gl.FLOAT,
                                                     "data": coords 
                                                   } );
+        
+        // generate indices coordinates and store in an array
+        var bandIndices = [];
+        
+        // calculate x, y and z for drawing the triangles
+        for(var i = 0; i< 42; i++) {     	
+        	var x;
+        	var y;
+        	if(i%2 == 0) {
+        		x = i;
+        		y = i + 1;	
+        	} else {       		
+        		x = i + 1;
+        		y = i;
+        	}
+        	var z = i + 2;
+        		
+        	bandIndices.push(x, y, z);
+        	// console.log("index: " + i + "   x: " + x + ", y: " + y + ", z: " + z);
+        }
+        // create index buffer object (VBO) for the bandIndices
+        this.indexBuffer = new vbo.Indices(gl, {
+        	"indices" : bandIndices
+        });
 
     };
 
@@ -69,11 +93,17 @@ define(["util", "vbo"],
     
         // bind the attribute buffers
         this.coordsBuffer.bind(gl, program, "vertexPosition");
- 
+        this.indexBuffer.bind(gl);
+        
         // draw the vertices as points
-        gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices()); 
-         
-
+//        gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices());
+        
+        if(this.asWireframe == true) {        	
+        	// TODO : Linienanzahl stimmt noch nicht!
+        	gl.drawElements(gl.LINES, 122, gl.UNSIGNED_SHORT, 0);
+        } else {
+        	gl.drawElements(gl.TRIANGLES, 122, gl.UNSIGNED_SHORT, 0);
+        }
     };
         
     // this module only returns the Band constructor function    

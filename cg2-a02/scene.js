@@ -8,9 +8,9 @@
 
 /* requireJS module definition */
 define(["jquery", "gl-matrix", "util", "program", "shaders", 
-        "models/triangle",  "models/cube"], 
+        "models/triangle",  "models/cube" , "models/band" ], 
        (function($, glmatrix, util, Program, shaders,
-                 Triangle, Cube ) {
+                 Triangle, Cube, Band) {
 
     "use strict";
     
@@ -30,9 +30,17 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                                         shaders.vs_NoColor(), 
                                         shaders.fs_ConstantColor([1.0,0.0,0.0,1.0]) );
         
+        this.programs.black = new Program(gl, 
+                shaders.vs_NoColor(), 
+                shaders.fs_ConstantColor([0.0,0.0,0.0,1.0]) );
+        
         // create some objects to be used for drawing
         this.triangle = new Triangle(gl);
         this.cube = new Cube(gl);
+        this.bandWireframes = new Band(gl);
+        this.bandWireframes.asWireframe = true;
+        this.band = new Band(gl);
+        this.band.asWireframe = false;
 
         // initial position of the camera
         this.cameraTransformation = mat4.lookAt([0,0.5,3], [0,0,0], [0,1,0]);
@@ -44,8 +52,10 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         // the HtmlController. Each attribute in this.drawOptions 
         // automatically generates a corresponding checkbox in the UI.
         this.drawOptions = { "Perspective Projection": false, 
-                             "Show Triangle": true,
-                             "Show Cube": true
+                             "Show Triangle": false,
+                             "Show Cube": false,
+                             "Show Band as Wireframe": true,
+                             "Show Band": false
                              };                       
     };
 
@@ -83,7 +93,13 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         }
         if(this.drawOptions["Show Cube"]) {    
             this.cube.draw(gl, this.programs.vertexColor);
-         }
+        }
+        if(this.drawOptions["Show Band as Wireframe"]) {    
+        	this.bandWireframes.draw(gl, this.programs.black);
+        }
+        if(this.drawOptions["Show Band"]) {    
+            this.band.draw(gl, this.programs.red);
+        }
     };
 
     // the scene's rotate method is called from HtmlController, when certain
