@@ -31,24 +31,24 @@ define(["util", "vbo"],
         config = config || {};
         var radius       = config.radius   || 1.0;
         var height       = config.height   || 0.1;
-        var segments     = config.segments || 20;
+        this.segments     = config.segments || 40;
         this.asWireframe = config.asWireframe;
         
         window.console.log("Creating a " + (this.asWireframe? "Wireframe " : "") + 
-                            "Band with radius="+radius+", height="+height+", segments="+segments ); 
+                            "Band with radius="+radius+", height="+height+", segments="+this.segments ); 
     
         // generate vertex coordinates and store in an array
         var coords = [];
 
-        for(var i=0; i<=segments; i++) {
+        for(var i=0; i<=this.segments; i++) {
         
             // X and Z coordinates are on a circle around the origin
-            var t = (i/segments)*Math.PI*2;
+            var t = (i/this.segments)*Math.PI*2;
             var x = Math.sin(t) * radius;
             var z = Math.cos(t) * radius;
             // Y coordinates are simply -height/2 and +height/2 
-            var y0 = height/2;
-            var y1 = -height/2;
+            var y0 = height;
+            var y1 = -height;
             
             // add two points for each position on the circle
             // IMPORTANT: push each float value separately!
@@ -66,7 +66,7 @@ define(["util", "vbo"],
         var bandIndices = [];
         
         // calculate x, y and z for drawing the triangles
-        for(var i = 0; i< 42; i++) {     	
+        for(var i = 0; i< this.segments * 2; i++) {     	
         	var x;
         	var y;
         	if(i%2 == 0) {
@@ -81,9 +81,30 @@ define(["util", "vbo"],
         	bandIndices.push(x, y, z);
         	// console.log("index: " + i + "   x: " + x + ", y: " + y + ", z: " + z);
         }
+        
+        var lineIndices = [];
+        
+        for(var i = 0; i < this.segments * 2; i++) {
+        	var x = i;
+        	if(i%2 == 0) {
+        		var y0 = i +1;
+            	lineIndices.push(x, y0);
+//           	 console.log("index: " + i + "   x: " + x + ", y0: " + y0);
+
+        	}
+        	var y1 = i + 2;
+        	
+        	lineIndices.push(x, y1);
+//        	 console.log("index: " + i + "   x: " + x + ", y1: " + y1);
+
+        }
         // create index buffer object (VBO) for the bandIndices
         this.indexBuffer = new vbo.Indices(gl, {
         	"indices" : bandIndices
+        });
+        
+        this.lineIndexBuffer = new vbo.Indices(gl, {
+        	"indices" : lineIndices
         });
 
     };
@@ -93,16 +114,17 @@ define(["util", "vbo"],
     
         // bind the attribute buffers
         this.coordsBuffer.bind(gl, program, "vertexPosition");
-        this.indexBuffer.bind(gl);
         
         // draw the vertices as points
 //        gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices());
         
         if(this.asWireframe == true) {        	
+        	this.lineIndexBuffer.bind(gl);
         	// TODO : Linienanzahl stimmt noch nicht!
-        	gl.drawElements(gl.LINES, 122, gl.UNSIGNED_SHORT, 0);
+        	gl.drawElements(gl.LINES, this.lineIndexBuffer.numIndices(), gl.UNSIGNED_SHORT, 0);
         } else {
-        	gl.drawElements(gl.TRIANGLES, 122, gl.UNSIGNED_SHORT, 0);
+        	this.indexBuffer.bind(gl);
+        	gl.drawElements(gl.TRIANGLES, this.indexBuffer.numIndices(), gl.UNSIGNED_SHORT, 0);
         }
     };
         

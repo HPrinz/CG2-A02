@@ -55,7 +55,8 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                              "Show Triangle": false,
                              "Show Cube": false,
                              "Show Band as Wireframe": true,
-                             "Show Band": false
+                             "Show Band": false,
+                             "Depth Test": false
                              };                       
     };
 
@@ -83,9 +84,6 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         gl.clearColor(0.7, 0.7, 0.7, 1.0); 
         gl.clear(gl.COLOR_BUFFER_BIT |gl.DEPTH_BUFFER_BIT); 
             
-        // set up depth test to discard occluded fragments
-        gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.LESS);  
                 
         // draw the scene objects
         if(this.drawOptions["Show Triangle"]) {    
@@ -99,6 +97,11 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         }
         if(this.drawOptions["Show Band"]) {    
             this.band.draw(gl, this.programs.red);
+        }
+        if(this.drawOptions["Depth Test"]) {
+        	// set up depth test to discard occluded fragments
+        	gl.enable(gl.DEPTH_TEST);
+        	gl.depthFunc(gl.LESS);  
         }
     };
 
