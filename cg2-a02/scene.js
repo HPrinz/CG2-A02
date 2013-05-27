@@ -56,8 +56,10 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                              "Show Cube": false,
                              "Show Band as Wireframe": true,
                              "Show Band": false,
-                             "Depth Test": false
-                             };                       
+                             "Depth Test": false,
+                             "Show Front Face": true,
+        					 "Show Back Face": true
+        				 	};                       
     };
 
     // the scene's draw method draws whatever the scene wants to draw
@@ -102,6 +104,14 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         	// set up depth test to discard occluded fragments
         	gl.enable(gl.DEPTH_TEST);
         	gl.depthFunc(gl.LESS);  
+        }
+        if(this.drawOptions["Show Front Face"]) {
+        	gl.cullFace(gl.FRONT);
+        	gl.enable(gl.CULL_FACE);
+        }
+        if(this.drawOptions["Show Back Face"]) {
+        	gl.cullFace(gl.BACK);
+        	gl.enable(gl.CULL_FACE);
         }
     };
 
