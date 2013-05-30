@@ -27,9 +27,9 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                                                 shaders.vs_PerVertexColor(), 
                                                 shaders.fs_PerVertexColor() );   
         this.programs.red = new Program(gl, 
-                                        shaders.vs_NoColor(), 
-                                        shaders.fs_ConstantColor([1.0,0.0,0.0,1.0]) );
-        
+                shaders.vs_NoColor(), 
+                shaders.fs_ConstantColor([1.0,0.0,0.0,1.0]) );
+
         this.programs.black = new Program(gl, 
                 shaders.vs_NoColor(), 
                 shaders.fs_ConstantColor([0.0,0.0,0.0,1.0]) );
@@ -37,11 +37,10 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         // create some objects to be used for drawing
         this.triangle = new Triangle(gl);
         this.cube = new Cube(gl);
-        this.bandWireframes = new Band(gl);
-        this.bandWireframes.asWireframe = true;
-        this.band = new Band(gl);
-        this.band.asWireframe = false;
-        this.robot = new Robot(gl);
+        this.band = new Band(gl,{radius: 0.5, height: 0.2, segments: 40, asWireframe: false});
+        this.bandWireframes = new Band(gl, {radius: 0.5, height: 0.2, segments: 40, asWireframe: true});
+        
+        this.robot = new Robot(gl, this.programs.red);
 
         // initial position of the camera
         this.cameraTransformation = mat4.lookAt([0,0.5,3], [0,0,0], [0,1,0]);
@@ -116,7 +115,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         	gl.enable(gl.CULL_FACE);
         }
         if(this.drawOptions["Show Robot"]) {
-        	this.robot.draw(gl);
+        	this.robot.draw(gl, this.programs.red, this.transformation);
         }
     };
 
