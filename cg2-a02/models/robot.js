@@ -8,7 +8,7 @@
  */
 
 /* requireJS module definition */
-define(["util", "vbo", "gl-matrix", "scene-node", "band", "cube", "triangle"], 
+define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", "models/triangle"], 
        (function(util, vbo, glMatrix, sceneNode, band, cube, triangle) {
        
     "use strict";

@@ -113,7 +113,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         }
         if(this.drawOptions["Show Back Face"]) {
         	gl.cullFace(gl.BACK);
-        	gl.enable(gl.CULL_BACK);
+        	gl.enable(gl.CULL_FACE);
         }
         if(this.drawOptions["Show Robot"]) {
         	this.robot.draw(gl);
