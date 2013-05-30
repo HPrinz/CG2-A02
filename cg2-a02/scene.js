@@ -8,9 +8,9 @@
 
 /* requireJS module definition */
 define(["jquery", "gl-matrix", "util", "program", "shaders", 
-        "models/triangle",  "models/cube" , "models/band" ], 
+        "models/triangle",  "models/cube" , "models/band", "models/robot" ], 
        (function($, glmatrix, util, Program, shaders,
-                 Triangle, Cube, Band) {
+                 Triangle, Cube, Band, Robot) {
 
     "use strict";
     
@@ -41,6 +41,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         this.bandWireframes.asWireframe = true;
         this.band = new Band(gl);
         this.band.asWireframe = false;
+        this.robot = new Robot(gl);
 
         // initial position of the camera
         this.cameraTransformation = mat4.lookAt([0,0.5,3], [0,0,0], [0,1,0]);
@@ -54,11 +55,12 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         this.drawOptions = { "Perspective Projection": false, 
                              "Show Triangle": false,
                              "Show Cube": false,
-                             "Show Band as Wireframe": true,
+                             "Show Band as Wireframe": false,
                              "Show Band": false,
                              "Depth Test": false,
                              "Show Front Face": true,
-        					 "Show Back Face": true
+        					 "Show Back Face": true,
+        					 "Show Robot": true
         				 	};                       
     };
 
@@ -111,7 +113,10 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         }
         if(this.drawOptions["Show Back Face"]) {
         	gl.cullFace(gl.BACK);
-        	gl.enable(gl.CULL_FACE);
+        	gl.enable(gl.CULL_BACK);
+        }
+        if(this.drawOptions["Show Robot"]) {
+        	this.robot.draw(gl);
         }
     };
 

@@ -31,7 +31,7 @@ define(["util", "vbo"],
         config = config || {};
         var radius       = config.radius   || 1.0;
         var height       = config.height   || 0.1;
-        this.segments     = config.segments || 40;
+        this.segments     = config.segments || 60;
         this.asWireframe = config.asWireframe;
         
         window.console.log("Creating a " + (this.asWireframe? "Wireframe " : "") + 
