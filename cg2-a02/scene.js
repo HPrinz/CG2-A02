@@ -8,9 +8,9 @@
 
 /* requireJS module definition */
 define(["jquery", "gl-matrix", "util", "program", "shaders", 
-        "models/triangle",  "models/cube" , "models/band", "models/robot" ], 
+        "models/triangle",  "models/cube" , "models/band", "models/robot" , "models/pyramid" ], 
        (function($, glmatrix, util, Program, shaders,
-                 Triangle, Cube, Band, Robot) {
+                 Triangle, Cube, Band, Robot, Pyramid) {
 
     "use strict";
     
@@ -39,6 +39,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         this.cube = new Cube(gl);
         this.band = new Band(gl,{radius: 0.5, height: 0.2, segments: 40, asWireframe: false});
         this.bandWireframes = new Band(gl, {radius: 0.5, height: 0.2, segments: 40, asWireframe: true});
+        this.pyramid = new Pyramid(gl);
         
         this.robot = new Robot(gl, this.programs.red);
 
@@ -59,7 +60,8 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                              "Depth Test": false,
                              "Show Front Face": true,
         					 "Show Back Face": true,
-        					 "Show Robot": true
+        					 "Show Robot": true,
+        					 "Show Pyramid": true
         				 	};                       
     };
 
@@ -117,6 +119,9 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         if(this.drawOptions["Show Robot"]) {
         	this.robot.draw(gl, this.programs.red, this.transformation);
         }
+        if(this.drawOptions["Show Pyramid"]) {    
+            this.pyramid.draw(gl, this.programs.red);
+         }
     };
 
     // the scene's rotate method is called from HtmlController, when certain
