@@ -29,10 +29,22 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         this.programs.red = new Program(gl, 
                 shaders.vs_NoColor(), 
                 shaders.fs_ConstantColor([1.0,0.0,0.0,1.0]) );
+        
+        this.programs.blue = new Program(gl, 
+                shaders.vs_NoColor(), 
+                shaders.fs_ConstantColor([0.0,0.0,1.0,1.0]) );
+        
+        this.programs.green = new Program(gl, 
+                shaders.vs_NoColor(), 
+                shaders.fs_ConstantColor([0.0,1.0,0.0,1.0]) );
 
         this.programs.black = new Program(gl, 
                 shaders.vs_NoColor(), 
                 shaders.fs_ConstantColor([0.0,0.0,0.0,1.0]) );
+        
+        this.programs.yellow = new Program(gl, 
+                shaders.vs_NoColor(), 
+                shaders.fs_ConstantColor([1.0,1.0,0.0,1.0]) );
         
         // create some objects to be used for drawing
         this.triangle = new Triangle(gl);
@@ -41,7 +53,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         this.bandWireframes = new Band(gl, {radius: 0.5, height: 0.2, segments: 40, asWireframe: true});
         this.pyramid = new Pyramid(gl);
         
-        this.robot = new Robot(gl, this.programs.red);
+        this.robot = new Robot(gl, this.programs);
 
         // initial position of the camera
         this.cameraTransformation = mat4.lookAt([0,0.5,3], [0,0,0], [0,1,0]);
@@ -58,10 +70,10 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                              "Show Band as Wireframe": false,
                              "Show Band": false,
                              "Depth Test": false,
-                             "Show Front Face": true,
-        					 "Show Back Face": true,
-        					 "Show Robot": true,
-        					 "Show Pyramid": true
+                             "Show Front Face": false,
+        					 "Show Back Face": false,
+        					 "Show Pyramid": false,
+        					 "Show Robot": true
         				 	};                       
     };
 
@@ -89,6 +101,9 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         gl.clearColor(0.7, 0.7, 0.7, 1.0); 
         gl.clear(gl.COLOR_BUFFER_BIT |gl.DEPTH_BUFFER_BIT); 
             
+     // set up depth test to discard occluded fragments
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LESS);  
                 
         // draw the scene objects
         if(this.drawOptions["Show Triangle"]) {    

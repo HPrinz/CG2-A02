@@ -8,8 +8,8 @@
  */
 
 /* requireJS module definition */
-define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", "models/triangle"], 
-       (function(util, vbo, glMatrix, SceneNode, Band, Cube, Triangle) {
+define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", "models/triangle", "models/pyramid" ], 
+       (function(util, vbo, glMatrix, SceneNode, Band, Cube, Triangle, Pyramid) {
        
     "use strict";
     
@@ -21,88 +21,154 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
     	var cube = new Cube(gl);
     	var band = new Band(gl,{radius: 0.5, height: 0.2, segments: 40, asWireframe: false});
         var triangle = new Triangle(gl);
-        // TODO Pyramide modellieren
-//        var pyramide = new Pyramide();
+        var pyramid = new Pyramid(gl);
         
         // #### Sizes ###
         // breite, hoehe, tiefe
         var lokSize = [0.8, 0.3, 0.3];
         
-        /*--*/var fahrerHausSize = [0.4, 0.3, 0.3];
+        /*--*/var fahrerHausSize = [0.3, 0.2, 0.3];
+                
+        // Groesse aller 6 Raeder
+        /*-----*/var raederSize = [0.15, 0.15, 0.15];
         
-        /*--+*/var scharnierLokVorneSize = [];
-        /*-----*/var radVRSize = [];
-        /*-----*/var radVLSize = [];
+        // Groesse der Radscharniere
+        /*--+*/var raederScharnierSize = [1.0, 0.02, 0.02];
         
-        /*--+*/var scharnierLokHintenSize = [];
-        /*-----*/var radHRSize = [];
-        /*-----*/var radHLSize = [];
-        
-        /*---+*/var schornsteinSize = [];
+        /*---+*/var schornsteinSize = [0.1, 0.8, 0.1];
         /*-----*/var dreieckeSize = [];
         
-        /*---*/var zugspitzeSize = [];
+        /*---*/var zugspitzeSize = [0.1, 0.1, 0.3];
         
-        /*--+*/var lokKupplungSize = [];
-        /*---+*/var kupplungSize = [];
-        /*-----+*/var anhaengerKupplungSize = [];
+        // Groesse der Kupplungsverbindungen 
+        /*--+*/var kupplungVerbindungSize = [0.1, 0.1, 0.1];
+        
+        /*---+*/var kupplungSize = [0.1, 0.1, 0.1];
         /*-------+*/var anhaengerSize = [0.4, 0.35, 0.3];
-        /*---------+*/var anhaengerScharnierSize = [];
-        /*------------*/var anhaengerRadRSize = [];
-        /*------------*/var anhaengerRadLSize = [];
-        /*----------*/var rampenScharnierSize = [];
+        /*----------*/var rampenScharnierSize = [0.3, 0.03, 0.03];
         
         // #### Translations ###
         // Kids first
         /*----------*/this.rampenScharnier = new SceneNode("rampenScharnier");
-        /*------------*/this.anhaengerRadR = new SceneNode("anhaengerRadR");
+
         /*------------*/ this.anhaengerRadL = new SceneNode("anhaengerRadL");
+        mat4.translate(this.anhaengerRadL.transformation, [0, 0, raederScharnierSize[2] * 9]);
+        
+        /*------------*/this.anhaengerRadR = new SceneNode("anhaengerRadR");
+        mat4.translate(this.anhaengerRadR.transformation, [0, 0, -raederScharnierSize[2] * 9]);
+
         /*----------*/this.anhaengerScharnier = new SceneNode("anhaengerScharnier", [this.anhaengerRadL, this.anhaengerRadR]);
         
         /*--------*/this.anhaenger = new SceneNode("anhaenger", [this.anhaengerScharnier, this.rampenScharnier]);
         /*------*/this.anhaengerKupplung = new SceneNode("anhaengerKupplung", [this.anheanger]);
         /*----*/this.kupplung = new SceneNode("kupplung", [this.anhaengerKupplung]);
+        
         /*--*/this.lokKupplung = new SceneNode("lokKupplung", [this.kupplung]);
+        mat4.translate(this.lokKupplung.transformation, [lokSize[0]/2, -lokSize[1]/4, 0]);
         
         /*--*/this.zugspitze = new SceneNode("zugspitze");
-        
+        mat4.translate(this.zugspitze.transformation, [-lokSize[0]/2 - zugspitzeSize[0]/2, -lokSize[1] + zugspitzeSize[1] * 2, 0]);
+
         /*----*/this.dreiecke = new SceneNode("dreiecke");
+        
         /*--*/this.schornstein = new SceneNode("schornstein", [this.dreiecke]);
+        mat4.translate(this.schornstein.transformation, [-lokSize[1] ,lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
         
         /*----*/this.radHL = new SceneNode("radHL");
+        mat4.translate(this.radHL.transformation, [0, 0, raederScharnierSize[2] * 9]);
+
         /*----*/this.radHR = new SceneNode("radHR");
+        mat4.translate(this.radHR.transformation, [0, 0, -raederScharnierSize[2] * 9]);
+        
         /*--*/this.scharnierLokHinten = new SceneNode("scharnierLokHinten", [this.radHL, this.radHR]);
+        mat4.translate(this.scharnierLokHinten.transformation, [lokSize[0]/4, -lokSize[1] + lokSize[1]/2, 0]);
         
         /*----*/this.radVL = new SceneNode("radVL");
-        /*----*/this.radVR = new SceneNode("radVR");
-        /*--*/this.scharnierLokVorne = new SceneNode("scharnierLokVorne", [this.radVL, this.radVR]);
+        mat4.translate(this.radVL.transformation, [0, 0, raederScharnierSize[2] * 9]);
         
-        /*--*/this.fahrerHaus = new SceneNode("fahrerHaus");
+        /*----*/this.radVR = new SceneNode("radVR");
+        mat4.translate(this.radVR.transformation, [0, 0, -raederScharnierSize[2] *9]);
+        
+        /*--*/this.scharnierLokVorne = new SceneNode("scharnierLokVorne", [this.radVL, this.radVR]);
+        mat4.translate(this.scharnierLokVorne.transformation, [-lokSize[0]/4, -lokSize[1] + lokSize[1]/2, lokSize[2] - lokSize[2]]);
 
-        //this.fahrerHaus, this.scharnierLokVorne, this.scharnierLokHinten, this.schornstein, this.zugspitze, this.lokKupplung
-        this.lok = new SceneNode("lok", [this.fahrerHaus]);
-        // TODO 
-        mat4.translate(this.lok.transformation, [0,lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
+        /*--*/this.fahrerHaus = new SceneNode("fahrerHaus");
+        mat4.translate(this.fahrerHaus.transformation, [lokSize[1]/2 + fahrerHausSize[1]/2,lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
+
+        this.lok = new SceneNode("lok", [this.fahrerHaus, this.scharnierLokVorne, this.scharnierLokHinten, this.schornstein, this.zugspitze]); //, this.lokKupplung]);
+                        
         
         // ### Skins ###
         //TODO
         var lokSkin = new SceneNode("lok skin", [cube], programs.red);
         mat4.scale(lokSkin.transformation, lokSize);
         
-        var fahrerHausSkin = new SceneNode("lok skin", [cube] , programs.red);
+        var fahrerHausSkin = new SceneNode("fahrerHaus skin", [cube] , programs.blue);
         mat4.scale(fahrerHausSkin.transformation, fahrerHausSize);
+        
+        // Skin für alle Räder 
+        var raederSkin = new SceneNode("raeder skin", [band], programs.black);
+        mat4.scale(raederSkin.transformation, raederSize);
+        mat4.rotate(raederSkin.transformation, Math.PI/2, [0,1,0]);
+        mat4.rotate(raederSkin.transformation, Math.PI/2, [0,0,1]);
+        
+        var rampenScharnierSkin = new SceneNode("rampenScharnier skin",[band], programs.red);
+        mat4.scale(rampenScharnierSkin.transformation, rampenScharnierSize);
+        mat4.rotate(rampenScharnierSkin.transformation, Math.PI/2, [0,0,1]);
+        
+        var raederScharnierSkin = new SceneNode("raederScharnier skin", [band], programs.black);
+        mat4.rotate(raederScharnierSkin.transformation, Math.PI/2, [0,1,0]);
+        mat4.scale(raederScharnierSkin.transformation, raederScharnierSize);
+        mat4.rotate(raederScharnierSkin.transformation, Math.PI/2, [0,0,1]);
+        
+        var schornsteinSkin = new SceneNode("schornstein skin", [band], programs.green);
+        mat4.scale(schornsteinSkin.transformation, schornsteinSize);
+
+        var zugspitzeSkin =  new SceneNode("zugspitze skin", [pyramid], programs.yellow);
+        mat4.rotate(zugspitzeSkin.transformation, Math.PI/2, [0,0,1]);
+        mat4.scale(zugspitzeSkin.transformation, zugspitzeSize);
+        
+        var kupplungVerbindungSkin = new SceneNode("kupplungVerbindung skin", [cube] , programs.yellow);
+        mat4.scale(kupplungVerbindungSkin.transformation, kupplungVerbindungSize);
+
+        var kupplungSkin =  new SceneNode("kupplung skin", [band] , programs.green);
+        mat4.scale(kupplungSkin.transformation, kupplungSize);
+
+        var anhaengerSkin = new SceneNode("anhaenger skin", [cube] , programs.red);
+        mat4.scale(anhaengerSkin.transformation, anhaengerSize);
         
         // ### Add Skeleton to Skin ###
         //TODO
-        this.lok.addObjects(lokSkin);
-        this.fahrerHaus.addObjects(fahrerHausSkin);
+        this.lok.addObjects([lokSkin]);
+        this.fahrerHaus.addObjects([fahrerHausSkin]);
         
+        this.radVR.addObjects([raederSkin]);
+        this.radVL.addObjects([raederSkin]);
+        this.radHR.addObjects([raederSkin]);
+        this.radHL.addObjects([raederSkin]);
+        this.anhaengerRadR.addObjects([raederSkin]);
+        this.anhaengerRadL.addObjects([raederSkin]);
+        
+        this.rampenScharnier.addObjects([rampenScharnierSkin]);
+        
+        this.scharnierLokVorne.addObjects([raederScharnierSkin]);
+        this.scharnierLokHinten.addObjects([raederScharnierSkin]);
+        this.anhaengerScharnier.addObjects([raederScharnierSkin]);
+        
+        this.schornstein.addObjects([schornsteinSkin]);
+        this.zugspitze.addObjects([zugspitzeSkin]);
+        
+        this.anhaengerKupplung.addObjects([kupplungVerbindungSkin]);        
+        this.lokKupplung.addObjects([kupplungVerbindungSkin]);
+        this.kupplung.addObjects([kupplungSkin]);
+        
+        this.anhaenger.addObjects([anhaengerSkin]);
     };
 
     // draw method: activate buffers and issue WebGL draw() method
     Robot.prototype.draw = function(gl,program, transformation) {
     	this.lok.draw(gl, program, transformation);
-
+    	this.lokKupplung.draw(gl, program, transformation);
     };
         
     // this module only returns the Robot constructor function    
