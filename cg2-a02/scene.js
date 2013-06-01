@@ -8,9 +8,9 @@
 
 /* requireJS module definition */
 define(["jquery", "gl-matrix", "util", "program", "shaders", 
-        "models/triangle",  "models/cube" , "models/band", "models/robot" , "models/pyramid" ], 
+        "models/triangle",  "models/cube" , "models/band", "models/robot" , "models/pyramid" ,"models/rectangle" ], 
        (function($, glmatrix, util, Program, shaders,
-                 Triangle, Cube, Band, Robot, Pyramid) {
+                 Triangle, Cube, Band, Robot, Pyramid, Rectangle) {
 
     "use strict";
     
@@ -52,6 +52,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         this.band = new Band(gl,{radius: 0.5, height: 0.2, segments: 40, asWireframe: false});
         this.bandWireframes = new Band(gl, {radius: 0.5, height: 0.2, segments: 40, asWireframe: true});
         this.pyramid = new Pyramid(gl);
+        this.rectangle = new Rectangle(gl);
         
         this.robot = new Robot(gl, this.programs);
 
@@ -73,6 +74,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                              "Show Front Face": false,
         					 "Show Back Face": false,
         					 "Show Pyramid": false,
+        					 "Show Rectangle": false,
         					 "Show Robot": true
         				 	};                       
     };
@@ -136,7 +138,10 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         }
         if(this.drawOptions["Show Pyramid"]) {    
             this.pyramid.draw(gl, this.programs.red);
-         }
+        }
+        if(this.drawOptions["Show Rectangle"]) {    
+            this.rectangle.draw(gl, this.programs.red);
+        }
     };
 
     // the scene's rotate method is called from HtmlController, when certain

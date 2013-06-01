@@ -8,8 +8,8 @@
  */
 
 /* requireJS module definition */
-define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", "models/triangle", "models/pyramid" ], 
-       (function(util, vbo, glMatrix, SceneNode, Band, Cube, Triangle, Pyramid) {
+define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", "models/triangle", "models/pyramid" , "models/rectangle" ], 
+       (function(util, vbo, glMatrix, SceneNode, Band, Cube, Triangle, Pyramid, Rectangle) {
        
     "use strict";
     
@@ -22,6 +22,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
     	var band = new Band(gl,{radius: 0.5, height: 0.2, segments: 40, asWireframe: false});
         var triangle = new Triangle(gl);
         var pyramid = new Pyramid(gl);
+        var rectangle = new Rectangle(gl);
         
         // #### Sizes ###
         // breite, hoehe, tiefe
@@ -41,15 +42,20 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         /*---*/var zugspitzeSize = [0.1, 0.1, 0.3];
         
         // Groesse der Kupplungsverbindungen 
-        /*--+*/var kupplungVerbindungSize = [0.1, 0.1, 0.1];
+        /*--+*/var kupplungVerbindungSize = [0.05, 0.05, 0.05];
         
         /*---+*/var kupplungSize = [0.1, 0.1, 0.1];
-        /*-------+*/var anhaengerSize = [0.4, 0.35, 0.3];
+        /*-------+*/var anhaengerSize = [0.4, 0.3, 0.3];
         /*----------*/var rampenScharnierSize = [0.3, 0.03, 0.03];
+        var rampeSize = [0.3, 0.4, 0.3]; 
         
         // #### Translations ###
         // Kids first
-        /*----------*/this.rampenScharnier = new SceneNode("rampenScharnier");
+        this.rampe = new SceneNode("rampe");
+        mat4.translate(this.rampe.transformation, [rampeSize[0] - rampenScharnierSize[0]/2, 0, 0]);
+        
+        /*----------*/this.rampenScharnier = new SceneNode("rampenScharnier", [this.rampe]);
+        mat4.translate(this.rampenScharnier.transformation, [anhaengerSize[0]/2, -anhaengerSize[1]/2, 0]);
 
         /*------------*/ this.anhaengerRadL = new SceneNode("anhaengerRadL");
         mat4.translate(this.anhaengerRadL.transformation, [0, 0, raederScharnierSize[2] * 9]);
@@ -58,10 +64,16 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.translate(this.anhaengerRadR.transformation, [0, 0, -raederScharnierSize[2] * 9]);
 
         /*----------*/this.anhaengerScharnier = new SceneNode("anhaengerScharnier", [this.anhaengerRadL, this.anhaengerRadR]);
-        
+        mat4.translate(this.anhaengerScharnier.transformation, [anhaengerSize[0]/16, -anhaengerSize[1]/2, 0]);
+
         /*--------*/this.anhaenger = new SceneNode("anhaenger", [this.anhaengerScharnier, this.rampenScharnier]);
-        /*------*/this.anhaengerKupplung = new SceneNode("anhaengerKupplung", [this.anheanger]);
+        mat4.translate(this.anhaenger.transformation, [anhaengerSize[0]/2 + kupplungVerbindungSize[0]/2, anhaengerSize[1]/4, 0]);
+
+        /*------*/this.anhaengerKupplung = new SceneNode("anhaengerKupplung", [this.anhaenger]);
+        mat4.translate(this.anhaengerKupplung.transformation, [kupplungSize[0]/2 + kupplungVerbindungSize[0]/2, 0, 0]);
+        
         /*----*/this.kupplung = new SceneNode("kupplung", [this.anhaengerKupplung]);
+        mat4.translate(this.kupplung.transformation, [kupplungSize[0]/2 + kupplungVerbindungSize[0]/2, 0, 0]);
         
         /*--*/this.lokKupplung = new SceneNode("lokKupplung", [this.kupplung]);
         mat4.translate(this.lokKupplung.transformation, [lokSize[0]/2, -lokSize[1]/4, 0]);
@@ -81,7 +93,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.translate(this.radHR.transformation, [0, 0, -raederScharnierSize[2] * 9]);
         
         /*--*/this.scharnierLokHinten = new SceneNode("scharnierLokHinten", [this.radHL, this.radHR]);
-        mat4.translate(this.scharnierLokHinten.transformation, [lokSize[0]/4, -lokSize[1] + lokSize[1]/2, 0]);
+        mat4.translate(this.scharnierLokHinten.transformation, [lokSize[0]/4, -lokSize[1]/2, 0]);
         
         /*----*/this.radVL = new SceneNode("radVL");
         mat4.translate(this.radVL.transformation, [0, 0, raederScharnierSize[2] * 9]);
@@ -90,12 +102,12 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.translate(this.radVR.transformation, [0, 0, -raederScharnierSize[2] *9]);
         
         /*--*/this.scharnierLokVorne = new SceneNode("scharnierLokVorne", [this.radVL, this.radVR]);
-        mat4.translate(this.scharnierLokVorne.transformation, [-lokSize[0]/4, -lokSize[1] + lokSize[1]/2, lokSize[2] - lokSize[2]]);
+        mat4.translate(this.scharnierLokVorne.transformation, [-lokSize[0]/4, -lokSize[1]/2, 0]);
 
         /*--*/this.fahrerHaus = new SceneNode("fahrerHaus");
         mat4.translate(this.fahrerHaus.transformation, [lokSize[1]/2 + fahrerHausSize[1]/2,lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
 
-        this.lok = new SceneNode("lok", [this.fahrerHaus, this.scharnierLokVorne, this.scharnierLokHinten, this.schornstein, this.zugspitze]); //, this.lokKupplung]);
+        this.lok = new SceneNode("lok", [this.fahrerHaus, this.scharnierLokVorne, this.scharnierLokHinten, this.schornstein, this.zugspitze, this.lokKupplung]);
                         
         
         // ### Skins ###
@@ -112,7 +124,8 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.rotate(raederSkin.transformation, Math.PI/2, [0,1,0]);
         mat4.rotate(raederSkin.transformation, Math.PI/2, [0,0,1]);
         
-        var rampenScharnierSkin = new SceneNode("rampenScharnier skin",[band], programs.red);
+        var rampenScharnierSkin = new SceneNode("rampenScharnier skin",[band], programs.yellow);
+        mat4.rotate(rampenScharnierSkin.transformation, Math.PI/2, [0,1,0]);
         mat4.scale(rampenScharnierSkin.transformation, rampenScharnierSize);
         mat4.rotate(rampenScharnierSkin.transformation, Math.PI/2, [0,0,1]);
         
@@ -137,6 +150,10 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         var anhaengerSkin = new SceneNode("anhaenger skin", [cube] , programs.red);
         mat4.scale(anhaengerSkin.transformation, anhaengerSize);
         
+        var rampeSkin = new SceneNode("rampe skin", [rectangle] , programs.black);
+        mat4.scale(rampeSkin.transformation, rampeSize);
+        mat4.rotate(rampeSkin.transformation, Math.PI/2, [1,0,0]);
+
         // ### Add Skeleton to Skin ###
         //TODO
         this.lok.addObjects([lokSkin]);
@@ -163,12 +180,13 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         this.kupplung.addObjects([kupplungSkin]);
         
         this.anhaenger.addObjects([anhaengerSkin]);
+        
+        this.rampe.addObjects([rampeSkin]);
     };
 
     // draw method: activate buffers and issue WebGL draw() method
     Robot.prototype.draw = function(gl,program, transformation) {
     	this.lok.draw(gl, program, transformation);
-    	this.lokKupplung.draw(gl, program, transformation);
     };
         
     // this module only returns the Robot constructor function    
