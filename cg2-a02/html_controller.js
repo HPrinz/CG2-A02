@@ -93,7 +93,10 @@ define(["jquery"],
             var keyToAxis = {
                 88: "worldX", 120: "worldX", 
                 89: "worldY", 121: "worldY",
-                70: "robot" , 102: "robot"
+                82: "rampenScharnier" , 114: "rampenScharnier",
+                75: "kupplung", 107: "kupplung",
+                83: "raederScharniere", 115: "raederScharniere",
+                76: "lok", 108: "lok"
             };
 
             // Rotate by +5 degrees or -5 degrees, depending on Shift key

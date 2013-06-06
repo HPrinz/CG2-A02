@@ -109,14 +109,14 @@ define([ "util", "vbo" ], (function(Util, vbo) {
 		               0.0, 1.0, 0.0,
 		               0.0, 1.0, 0.0,
 		               0.0, 1.0, 0.0,
-		               1.0, 0.0, 0.0,
-		               1.0, 0.0, 0.0,
-		               1.0, 0.0, 0.0,
-		               1.0, 0.0, 0.0,
-		               1.0, 0.0, 0.0,
-		               1.0, 0.0, 0.0,
-		               1.0, 0.0, 0.0,
-		               1.0, 0.0, 0.0
+		               1.0, 1.0, 0.0,
+		               1.0, 1.0, 0.0,
+		               1.0, 1.0, 0.0,
+		               1.0, 1.0, 0.0,
+		               1.0, 1.0, 0.0,
+		               1.0, 1.0, 0.0,
+		               1.0, 1.0, 0.0,
+		               1.0, 1.0, 0.0
 		               ];
 
 		// therer are 3 floats per vertex, so...
@@ -134,7 +134,7 @@ define([ "util", "vbo" ], (function(Util, vbo) {
 			"indices" : cubeIndices
 		});
 
-//		// create vertex buffer object (VBO) for the colors
+		// create vertex buffer object (VBO) for the colors
 		this.colorBuffer = new vbo.Attribute(gl, {
 			"numComponents" : 3,
 			"dataType" : gl.FLOAT,

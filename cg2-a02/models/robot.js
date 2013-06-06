@@ -115,7 +115,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         var lokSkin = new SceneNode("lok skin", [cube], programs.red);
         mat4.scale(lokSkin.transformation, lokSize);
         
-        var fahrerHausSkin = new SceneNode("fahrerHaus skin", [cube] , programs.blue);
+        var fahrerHausSkin = new SceneNode("fahrerHaus skin", [cube] , programs.vertexColor);
         mat4.scale(fahrerHausSkin.transformation, fahrerHausSize);
         
         // Skin für alle Räder 
@@ -189,15 +189,25 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
     	this.lok.draw(gl, program, transformation);
     };
         
-    Robot.prototype.rotate = function(angle) {
-    	// TODO
-    	mat4.rotate(this.rampenScharnier.transformation, angle, [0,0,1]);
-    	mat4.rotate(this.kupplung.transformation, angle, [0,1,0]);
+    Robot.prototype.rotate = function(joint, angle) {
     	
-    	mat4.rotate(this.scharnierLokVorne.transformation, angle, [0,0,1]);
-    	mat4.rotate(this.scharnierLokHinten.transformation, angle, [0,0,1]);
-    	mat4.rotate(this.anhaengerScharnier.transformation, angle, [0,0,1]);
-    	mat4.translate(this.lok.transformation, [-angle,0,0]);
+    	if(joint == "rampenScharnier") {
+    		mat4.rotate(this.rampenScharnier.transformation, angle, [0,0,1]);
+    	} 
+    	if(joint == "kupplung") {
+    		mat4.rotate(this.kupplung.transformation, angle, [0,1,0]);
+    	}
+    	if(joint == "raederScharniere") {
+    		mat4.rotate(this.scharnierLokVorne.transformation, angle, [0,0,1]);
+    		mat4.rotate(this.scharnierLokHinten.transformation, angle, [0,0,1]);
+    		mat4.rotate(this.anhaengerScharnier.transformation, angle, [0,0,1]);
+    		mat4.translate(this.lok.transformation, [-angle,0,0]);
+    	}
+    	if(joint == "lok") {
+    		mat4.rotate(this.lok.transformation, angle, [0,1,0]);
+    		mat4.rotate(this.kupplung.transformation, -angle, [0,1,0]);
+    	}
+
     };
         
     // this module only returns the Robot constructor function    

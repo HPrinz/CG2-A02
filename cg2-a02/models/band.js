@@ -120,7 +120,6 @@ define(["util", "vbo"],
         
         if(this.asWireframe == true) {        	
         	this.lineIndexBuffer.bind(gl);
-        	// TODO : Linienanzahl stimmt noch nicht!
         	gl.drawElements(gl.LINES, this.lineIndexBuffer.numIndices(), gl.UNSIGNED_SHORT, 0);
         } else {
         	this.indexBuffer.bind(gl);
