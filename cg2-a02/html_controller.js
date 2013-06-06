@@ -92,7 +92,8 @@ define(["jquery"],
             // there are two keys for each joint: with Shift and without Shift pressed
             var keyToAxis = {
                 88: "worldX", 120: "worldX", 
-                89: "worldY", 121: "worldY"
+                89: "worldY", 121: "worldY",
+                70: "robot" , 102: "robot"
             };
 
             // Rotate by +5 degrees or -5 degrees, depending on Shift key

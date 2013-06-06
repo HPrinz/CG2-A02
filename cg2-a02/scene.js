@@ -161,6 +161,9 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
             case "worldX": 
                 mat4.rotate(this.transformation, angle, [1,0,0]);
                 break;
+            case "robot":
+                this.robot.rotate(angle);
+                break;
             default:
                 window.console.log("axis " + rotationAxis + " not implemented.");
             break;

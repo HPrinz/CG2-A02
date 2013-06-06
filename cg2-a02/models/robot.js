@@ -52,7 +52,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         // #### Translations ###
         // Kids first
         this.rampe = new SceneNode("rampe");
-        mat4.translate(this.rampe.transformation, [rampeSize[0]/2 + rampenScharnierSize[1]/2, 0, -anhaengerSize[2]/2]);
+        mat4.translate(this.rampe.transformation, [rampeSize[0]/2 , 0, -anhaengerSize[2]/2]);
         
         /*----------*/this.rampenScharnier = new SceneNode("rampenScharnier", [this.rampe]);
         mat4.translate(this.rampenScharnier.transformation, [anhaengerSize[0]/2, -anhaengerSize[1]/2, 0]);
@@ -108,7 +108,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.translate(this.fahrerHaus.transformation, [lokSize[0]/2 - fahrerHausSize[0]/2 , lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
 
         this.lok = new SceneNode("lok", [this.fahrerHaus, this.scharnierLokVorne, this.scharnierLokHinten, this.schornstein, this.zugspitze, this.lokKupplung]);
-        mat4.translate(this.lok.transformation, [0, -lokSize[1]/2, 0]);
+        mat4.translate(this.lok.transformation, [-lokSize[0]/2, -lokSize[1]/2, 0]);
         
         // ### Skins ###
         //TODO
@@ -189,8 +189,15 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
     	this.lok.draw(gl, program, transformation);
     };
         
-    Robot.prototype.rotate = function(rotationAxis, angle) {
+    Robot.prototype.rotate = function(angle) {
     	// TODO
+    	mat4.rotate(this.rampenScharnier.transformation, angle, [0,0,1]);
+    	mat4.rotate(this.kupplung.transformation, angle, [0,1,0]);
+    	
+    	mat4.rotate(this.scharnierLokVorne.transformation, angle, [0,0,1]);
+    	mat4.rotate(this.scharnierLokHinten.transformation, angle, [0,0,1]);
+    	mat4.rotate(this.anhaengerScharnier.transformation, angle, [0,0,1]);
+    	mat4.translate(this.lok.transformation, [-angle,0,0]);
     };
         
     // this module only returns the Robot constructor function    
