@@ -44,15 +44,15 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         // Groesse der Kupplungsverbindungen 
         /*--+*/var kupplungVerbindungSize = [0.05, 0.05, 0.05];
         
-        /*---+*/var kupplungSize = [0.1, 0.1, 0.1];
-        /*-------+*/var anhaengerSize = [0.4, 0.3, 0.3];
-        /*----------*/var rampenScharnierSize = [0.3, 0.03, 0.03];
+        /*---+*/var kupplungSize = [0.1, 0.05, 0.1];
+        /*-------+*/var anhaengerSize = [0.6, 0.3, 0.3];
+        /*----------*/var rampenScharnierSize = [0.5, 0.03, 0.03];
         var rampeSize = [0.3, 0.4, 0.3]; 
         
         // #### Translations ###
         // Kids first
         this.rampe = new SceneNode("rampe");
-        mat4.translate(this.rampe.transformation, [rampeSize[0] - rampenScharnierSize[0]/2, 0, 0]);
+        mat4.translate(this.rampe.transformation, [rampeSize[0]/2 + rampenScharnierSize[1]/2, 0, -anhaengerSize[2]/2]);
         
         /*----------*/this.rampenScharnier = new SceneNode("rampenScharnier", [this.rampe]);
         mat4.translate(this.rampenScharnier.transformation, [anhaengerSize[0]/2, -anhaengerSize[1]/2, 0]);
@@ -76,15 +76,15 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.translate(this.kupplung.transformation, [kupplungSize[0]/2 + kupplungVerbindungSize[0]/2, 0, 0]);
         
         /*--*/this.lokKupplung = new SceneNode("lokKupplung", [this.kupplung]);
-        mat4.translate(this.lokKupplung.transformation, [lokSize[0]/2, -lokSize[1]/4, 0]);
+        mat4.translate(this.lokKupplung.transformation, [lokSize[0]/2 + kupplungVerbindungSize[0]/2, -lokSize[1]/4, 0]);
         
         /*--*/this.zugspitze = new SceneNode("zugspitze");
-        mat4.translate(this.zugspitze.transformation, [-lokSize[0]/2 - zugspitzeSize[0]/2, -lokSize[1] + zugspitzeSize[1] * 2, 0]);
+        mat4.translate(this.zugspitze.transformation, [-lokSize[0]/2, -lokSize[1] + zugspitzeSize[1] * 2, 0]);
 
         /*----*/this.dreiecke = new SceneNode("dreiecke");
         
         /*--*/this.schornstein = new SceneNode("schornstein", [this.dreiecke]);
-        mat4.translate(this.schornstein.transformation, [-lokSize[1] ,lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
+        mat4.translate(this.schornstein.transformation, [-lokSize[0]/3, lokSize[1], 0]);
         
         /*----*/this.radHL = new SceneNode("radHL");
         mat4.translate(this.radHL.transformation, [0, 0, raederScharnierSize[2] * 9]);
@@ -105,10 +105,10 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.translate(this.scharnierLokVorne.transformation, [-lokSize[0]/4, -lokSize[1]/2, 0]);
 
         /*--*/this.fahrerHaus = new SceneNode("fahrerHaus");
-        mat4.translate(this.fahrerHaus.transformation, [lokSize[1]/2 + fahrerHausSize[1]/2,lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
+        mat4.translate(this.fahrerHaus.transformation, [lokSize[0]/2 - fahrerHausSize[0]/2 , lokSize[1]/2 + fahrerHausSize[1]/2, 0]);
 
         this.lok = new SceneNode("lok", [this.fahrerHaus, this.scharnierLokVorne, this.scharnierLokHinten, this.schornstein, this.zugspitze, this.lokKupplung]);
-                        
+        mat4.translate(this.lok.transformation, [0, -lokSize[1]/2, 0]);
         
         // ### Skins ###
         //TODO
@@ -155,7 +155,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.rotate(rampeSkin.transformation, Math.PI/2, [1,0,0]);
 
         // ### Add Skeleton to Skin ###
-        //TODO
+       
         this.lok.addObjects([lokSkin]);
         this.fahrerHaus.addObjects([fahrerHausSkin]);
         
@@ -187,6 +187,10 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
     // draw method: activate buffers and issue WebGL draw() method
     Robot.prototype.draw = function(gl,program, transformation) {
     	this.lok.draw(gl, program, transformation);
+    };
+        
+    Robot.prototype.rotate = function(rotationAxis, angle) {
+    	// TODO
     };
         
     // this module only returns the Robot constructor function    

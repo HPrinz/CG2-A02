@@ -13,13 +13,13 @@ define(["util", "vbo"],
     var Rectangle = function(gl) {
     
         // generate vertex coordinates and store in an array
-        var coords = [ -0.5, -0.5,  0,  // coordinates of A
-                        0.5, -0.5,  0,  // coordinates of B
-                        0.5,  0.5,  0,  // coordinates of C
+        var coords = [ -0.5, 0,  0,  // coordinates of A
+                        0.5, 0,  0,  // coordinates of B
+                        0.5, 1.0,  0,  // coordinates of C
                        
-                       -0.5, -0.5,  0,  // coordinates of A'
-                        0.5,  0.5,  0,  // coordinates of C'
-                       -0.5,  0.5,  0   // coordinates of D
+                       -0.5, 0,  0,  // coordinates of A'
+                        0.5, 1.0,  0,  // coordinates of C'
+                       -0.5, 1.0,  0   // coordinates of D
                           
                      ];
 

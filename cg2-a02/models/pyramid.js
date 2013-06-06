@@ -8,30 +8,30 @@ define(["util", "vbo"],
     var Pyramid = function(gl) {
     
         // generate vertex coordinates and store in an array
-        var coords = [ -0.5, -0.5,  0.5,  // coordinates of A
-                        0.5, -0.5,  0.5,  // coordinates of B
-                        0.5, -0.5, -0.5,  // coordinates of C
+        var coords = [ -0.5, 0,  0.5,  // coordinates of A
+                        0.5, 0,  0.5,  // coordinates of B
+                        0.5, 0, -0.5,  // coordinates of C
                           
-                        0.5, -0.5, -0.5,  // coordinates of C'
-                       -0.5, -0.5, -0.5,  // coordinates of D
-                       -0.5, -0.5,  0.5,  // coordinates of A'
+                        0.5, 0, -0.5,  // coordinates of C'
+                       -0.5, 0, -0.5,  // coordinates of D
+                       -0.5, 0,  0.5,  // coordinates of A'
 
                           
-                       -0.5, -0.5,  0.5,  // coordinates of A'
-                        0.5, -0.5,  0.5,  // coordinates of B'
-                          0, 0.25,    0,  // coordinates of E 
+                       -0.5, 0,  0.5,  // coordinates of A'
+                        0.5, 0,  0.5,  // coordinates of B'
+                          0, 0.75, 0,  // coordinates of E 
 
-                        0.5, -0.5,  0.5,  // coordinates of B'
-                        0.5, -0.5, -0.5,  // coordinates of C'
-                          0, 0.25,    0,  // coordinates of E'
+                        0.5, 0,  0.5,  // coordinates of B'
+                        0.5, 0, -0.5,  // coordinates of C'
+                          0, 0.75, 0,  // coordinates of E'
                         
-                        0.5, -0.5, -0.5,  // coordinates of C'                        
-                       -0.5, -0.5, -0.5,  // coordinates of D'
-                          0, 0.25,    0,  // coordinates of E'
+                        0.5, 0, -0.5,  // coordinates of C'                        
+                       -0.5, 0, -0.5,  // coordinates of D'
+                          0, 0.75, 0,  // coordinates of E'
                           
-                       -0.5, -0.5, -0.5,  // coordinates of D'
-                       -0.5, -0.5,  0.5,  // coordinates of A'                          
-                          0, 0.25,    0   // coordinates of E'
+                       -0.5, 0, -0.5,  // coordinates of D'
+                       -0.5, 0,  0.5,  // coordinates of A'                          
+                          0, 0.75, 0   // coordinates of E'
                      ];
 
         // create vertex buffer object (VBO) for the coordinates
