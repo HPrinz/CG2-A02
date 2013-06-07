@@ -118,7 +118,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         	this.bandWireframes.draw(gl, this.programs.black);
         }
         if(this.drawOptions["Show Band"]) {    
-            this.band.draw(gl, this.programs.red);
+            this.band.draw(gl, this.programs.vertexColor);
         }
         if(this.drawOptions["Depth Test"]) {
         	// set up depth test to discard occluded fragments

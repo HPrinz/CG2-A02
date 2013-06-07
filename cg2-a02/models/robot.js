@@ -119,7 +119,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.scale(fahrerHausSkin.transformation, fahrerHausSize);
         
         // Skin für alle Räder 
-        var raederSkin = new SceneNode("raeder skin", [band], programs.black);
+        var raederSkin = new SceneNode("raeder skin", [band], programs.vertexColor);
         mat4.scale(raederSkin.transformation, raederSize);
         mat4.rotate(raederSkin.transformation, Math.PI/2, [0,1,0]);
         mat4.rotate(raederSkin.transformation, Math.PI/2, [0,0,1]);

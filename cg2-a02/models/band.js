@@ -39,6 +39,7 @@ define(["util", "vbo"],
     
         // generate vertex coordinates and store in an array
         var coords = [];
+        var colors = [];
 
         for(var i=0; i<=this.segments; i++) {
         
@@ -53,8 +54,24 @@ define(["util", "vbo"],
             // add two points for each position on the circle
             // IMPORTANT: push each float value separately!
             coords.push(x,y0,z);
-            coords.push(x,y1,z);    
+            coords.push(x,y1,z);
+            if(i <= this.segments/4) {
+            	colors.push(0.0, 1.0, 0.0);
+            	colors.push(0.0, 1.0, 0.0);
+            } else if (i <= this.segments/2 && i> this.segments/4) {       	
+            	colors.push(1.0, 1.0, 0.0);
+            	colors.push(1.0, 1.0, 0.0);
+            } else if(i <= this.segments*3/4 && i> this.segments/2) {
+            	colors.push(0.0, 0.0, 1.0);
+            	colors.push(0.0, 0.0, 1.0);
+        	} else {
+        		colors.push(0.0, 1.0, 1.0);
+            	colors.push(0.0, 1.0, 1.0);
+        	}           
         };      
+        
+        console.log("coords.length: " + coords.length);
+        console.log("colors.length: " + colors.length);
         
         // create vertex buffer object (VBO) for the coordinates
         this.coordsBuffer = new vbo.Attribute(gl, { "numComponents": 3,
@@ -72,7 +89,7 @@ define(["util", "vbo"],
         	if(i%2 == 0) {
         		x = i;
         		y = i + 1;	
-        	} else {       		
+           	} else {       		
         		x = i + 1;
         		y = i;
         	}
@@ -106,7 +123,13 @@ define(["util", "vbo"],
         this.lineIndexBuffer = new vbo.Indices(gl, {
         	"indices" : lineIndices
         });
-
+        
+     // create vertex buffer object (VBO) for the colors
+		this.colorBuffer = new vbo.Attribute(gl, {
+			"numComponents" : 3,
+			"dataType" : gl.FLOAT,
+			"data" : colors
+		});
     };
 
     // draw method: activate buffers and issue WebGL draw() method
@@ -114,7 +137,7 @@ define(["util", "vbo"],
     
         // bind the attribute buffers
         this.coordsBuffer.bind(gl, program, "vertexPosition");
-        
+        this.colorBuffer.bind(gl, program, "vertexColor");
         // draw the vertices as points
 //        gl.drawArrays(gl.POINTS, 0, this.coordsBuffer.numVertices());
         
