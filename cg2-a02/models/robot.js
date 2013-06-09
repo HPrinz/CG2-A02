@@ -20,9 +20,12 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
     	// ### Components we need ###
     	var cube = new Cube(gl);
     	var band = new Band(gl,{radius: 0.5, height: 0.2, segments: 40, asWireframe: false});
-        var triangle = new Triangle(gl);
+        var triangle = new Triangle(gl, false);
         var pyramid = new Pyramid(gl);
         var rectangle = new Rectangle(gl);
+        
+        this.counter = 0;
+        this.angleSize = 0;
         
         // #### Sizes ###
         // breite, hoehe, tiefe
@@ -37,7 +40,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         /*--+*/var raederScharnierSize = [1.0, 0.02, 0.02];
         
         /*---+*/var schornsteinSize = [0.1, 0.8, 0.1];
-        /*-----*/var dreieckeSize = [];
+        /*-----*/var dreieckeSize = [0.1, 0.1, 0.1];
         
         /*---*/var zugspitzeSize = [0.1, 0.1, 0.3];
         
@@ -82,6 +85,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         mat4.translate(this.zugspitze.transformation, [-lokSize[0]/2, -lokSize[1] + zugspitzeSize[1] * 2, 0]);
 
         /*----*/this.dreiecke = new SceneNode("dreiecke");
+        mat4.translate(this.dreiecke.transformation, [schornsteinSize[0]/10, schornsteinSize[1]/3 , 0]);
         
         /*--*/this.schornstein = new SceneNode("schornstein", [this.dreiecke]);
         mat4.translate(this.schornstein.transformation, [-lokSize[0]/3, lokSize[1], 0]);
@@ -136,6 +140,9 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         
         var schornsteinSkin = new SceneNode("schornstein skin", [band], programs.green);
         mat4.scale(schornsteinSkin.transformation, schornsteinSize);
+        
+        var dreieckeSkin = new SceneNode("dreiecke skin", [triangle], programs.red);
+        mat4.scale(dreieckeSkin.transformation, dreieckeSize);
 
         var zugspitzeSkin =  new SceneNode("zugspitze skin", [pyramid], programs.yellow);
         mat4.rotate(zugspitzeSkin.transformation, Math.PI/2, [0,0,1]);
@@ -173,6 +180,7 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
         this.anhaengerScharnier.addObjects([raederScharnierSkin]);
         
         this.schornstein.addObjects([schornsteinSkin]);
+        this.dreiecke.addObjects([dreieckeSkin]);
         this.zugspitze.addObjects([zugspitzeSkin]);
         
         this.anhaengerKupplung.addObjects([kupplungVerbindungSkin]);        
@@ -207,8 +215,19 @@ define(["util", "vbo", "gl-matrix", "scene_node", "models/band", "models/cube", 
     		mat4.rotate(this.lok.transformation, angle, [0,1,0]);
     		mat4.rotate(this.kupplung.transformation, -angle, [0,1,0]);
     	}
-
+    	if(joint == "dreiecke") {
+    		if (this.counter < 10){
+    			mat4.translate(this.dreiecke.transformation,[0,angle/2,0]);
+    			this.angleSize = this.angleSize + angle/2;
+    			this.counter ++;
+    		}else{
+    			mat4.translate(this.dreiecke.transformation,[0, -this.angleSize , 0]);
+    			this.counter = 0;
+    			this.angleSize = 0;
+    		}
+    	}
     };
+    
         
     // this module only returns the Robot constructor function    
     return Robot;

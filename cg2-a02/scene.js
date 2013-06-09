@@ -47,7 +47,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
                 shaders.fs_ConstantColor([1.0,1.0,0.0,1.0]) );
         
         // create some objects to be used for drawing
-        this.triangle = new Triangle(gl);
+        this.triangle = new Triangle(gl, true);
         this.cube = new Cube(gl);
         this.band = new Band(gl,{radius: 0.5, height: 0.2, segments: 40, asWireframe: false});
         this.bandWireframes = new Band(gl, {radius: 0.5, height: 0.2, segments: 40, asWireframe: true});
@@ -57,7 +57,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         this.robot = new Robot(gl, this.programs);
 
         // initial position of the camera
-        this.cameraTransformation = mat4.lookAt([0,0.5,3], [0,0,0], [0,1,0]);
+        this.cameraTransformation = mat4.lookAt([0,0.5,3], [0,-0.5,0], [0,1,0]);
 
         // transformation of the scene, to be changed by animation
         this.transformation = mat4.create(this.cameraTransformation);
@@ -100,7 +100,7 @@ define(["jquery", "gl-matrix", "util", "program", "shaders",
         }
         
         // clear color and depth buffers
-        gl.clearColor(0.7, 0.7, 0.7, 1.0); 
+        gl.clearColor(0.8, 0.7, 0.5, 1.0); 
         gl.clear(gl.COLOR_BUFFER_BIT |gl.DEPTH_BUFFER_BIT); 
             
      // set up depth test to discard occluded fragments
